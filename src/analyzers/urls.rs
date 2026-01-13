@@ -11,10 +11,11 @@ const SUSPICIOUS_PATTERNS: &[(&str, &str, Severity)] = &[
     (r"(?i)\b(https?://[a-z0-9\-]+\.s3\.amazonaws\.com/[^\s]+[A-Za-z0-9/=_\-]{20,})", "Hardcoded S3 URL with potential access key", Severity::High),
     (r"(?i)\b(https?://[a-z0-9\-]+\.s3\.amazonaws\.com)", "Hardcoded S3 endpoint", Severity::Low),
     // Hardcoded database URLs
-    (r"(?i)\b(mongodb\+srv://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded MongoDB connection string", Severity::Critical),
-    (r"(?i)\b(redis://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded Redis connection string", Severity::Critical),
-    (r"(?i)\b(postgres|postgresql)://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded PostgreSQL connection string", Severity::Critical),
-    (r"(?i)\b(mysql)://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded MySQL connection string", Severity::Critical),
+    (r"(?i)(mongodb\+srv://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded MongoDB connection string", Severity::Critical),
+    (r"(?i)(redis://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded Redis connection string", Severity::Critical),
+    (r"(?i)(postgresql://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded PostgreSQL connection string", Severity::Critical),
+    (r"(?i)(postgres://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded PostgreSQL connection string", Severity::Critical),
+    (r"(?i)(mysql://[^\s:]+:[^\s@]+@[^\s/]+)", "Hardcoded MySQL connection string", Severity::Critical),
     // API endpoints
     (r#"(?i)\b(https?://(api\.|www\.)?[a-z0-9\-]+\.com/[^\s"]{20,})"#, "Potential hardcoded API endpoint", Severity::Medium),
     (r"(?i)\b(https?://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})[:/]", "Direct IP address URL", Severity::Medium),

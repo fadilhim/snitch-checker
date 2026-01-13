@@ -318,7 +318,8 @@ mod tests {
     fn test_local_repository() {
         let temp = tempfile::tempdir().unwrap();
         let repo = LocalRepository::new(temp.path()).unwrap();
-        assert_eq!(repo.path(), temp.path());
+        // Both paths should be canonicalized
+        assert_eq!(repo.path(), temp.path().canonicalize().unwrap());
         assert!(!repo.is_git_repo());
     }
 }

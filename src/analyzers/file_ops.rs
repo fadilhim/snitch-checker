@@ -73,7 +73,7 @@ const DANGEROUS_FILE_PATTERNS: &[(&str, &str, &str, Severity)] = &[
     ),
     // Serialization/Pickling
     (
-        r"(?i)pickle\.loads|unpickle",
+        r"(?i)pickle\.load|unpickle",
         "FILE-011",
         "Use of pickle deserialization (can execute arbitrary code)",
         Severity::High,

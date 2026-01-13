@@ -12,5 +12,6 @@ pub mod utils;
 // Re-export commonly used types
 pub use crate::core::{
     Finding, Location, Repository, ScanReport, ScanSummary, Scanner, Severity,
+    GitRepository, LocalRepository,
 };
 pub use crate::reporters::{ConsoleReporter, HtmlReporter, OutputFormat, Reporter, SarifReporter};
