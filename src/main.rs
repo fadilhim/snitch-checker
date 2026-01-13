@@ -59,13 +59,33 @@ fn get_remote_url() -> Result<String> {
         .with_prompt("Enter the Git repository URL")
         .with_initial_text("https://github.com/")
         .validate_with(|input: &String| -> Result<(), &str> {
-            if input.trim().is_empty() {
-                Err("URL cannot be empty")
-            } else if !input.contains("github.com") && !input.contains("gitlab.com") && !input.contains("git@") {
-                Err("Please enter a valid Git URL (https://github.com/user/repo or git@github.com:user/repo.git)")
-            } else {
-                Ok(())
+            let input = input.trim();
+
+            if input.is_empty() {
+                return Err("URL cannot be empty");
             }
+
+            // Check if it's a valid Git URL format
+            let is_ssh = input.starts_with("git@") || input.starts_with("ssh://");
+            let is_https = input.starts_with("https://") || input.starts_with("http://");
+            let is_git_protocol = input.starts_with("git://");
+
+            // Known Git hosting services
+            let known_hosts = [
+                "github.com", "gitlab.com", "bitbucket.org", "codeberg.org",
+                "git.sr.ht", "gitea.com", "notabug.org", "framagit.org",
+                "gitlab.gnome.org", "git.kernel.org", "sourcegraph.com",
+            ];
+
+            let has_known_host = known_hosts.iter().any(|host| input.contains(host));
+            let ends_with_git = input.ends_with(".git");
+            let looks_like_git_url = is_ssh || is_https || is_git_protocol;
+
+            if !looks_like_git_url || (!has_known_host && !is_ssh && !ends_with_git) {
+                return Err("Please enter a valid Git URL\n  Examples:\n  - https://github.com/user/repo\n  - https://gitlab.com/user/repo.git\n  - git@github.com:user/repo.git\n  - https://codeberg.org/user/repo");
+            }
+
+            Ok(())
         })
         .interact_text()
         .context("Failed to get URL input")
