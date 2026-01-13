@@ -11,8 +11,8 @@ GITHUB_TOKEN = "ghp_1234567890abcdefghijklmnopqrstuvwxyz"
 # Database connection (should be detected)
 DATABASE_URL = "postgres://user:password123@localhost:5432/mydb"
 
-# API key (should be detected)
-STRIPE_API_KEY = "sk_test_fake1234567890abcdefghijklmnop"
+# Stripe API key (should be detected) - TEST DATA, NOT A REAL KEY
+STRIPE_API_KEY = "sk_test_fake1234567890abcdefghijklmnopqrstuv"
 
 # JWT token (should be detected)
 JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
