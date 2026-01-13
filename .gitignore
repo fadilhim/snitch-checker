@@ -25,6 +25,10 @@ CLAUDE.md
 *.temp
 .snitch-temp/
 
+# Generated reports
+snitch-report-*.html
+snitch-report-*.sarif
+
 # Test/coverage
 *.profraw
 *.profdata
