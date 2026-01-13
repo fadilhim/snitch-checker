@@ -1,0 +1,37 @@
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# AI-related markdown files (for AI assistant use only)
+CLAUDE.md
+.claude/
+.cursor/
+.cursorrules
+.github/copilot-instructions.md
+.prompts/
+
+# Temporary files
+*.tmp
+*.temp
+.snitch-temp/
+
+# Test/coverage
+*.profraw
+*.profdata
+
+# Build outputs
+/dist/
+/build/
+
+# OS
+Thumbs.db

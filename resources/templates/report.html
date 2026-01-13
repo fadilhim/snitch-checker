@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snitch Security Scan Report - {{REPOSITORY}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .header .repo {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .header .meta {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .summary-card .count {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .summary-card.critical .count { color: #ff0055; }
+        .summary-card.high .count { color: #ff4444; }
+        .summary-card.medium .count { color: #ff9944; }
+        .summary-card.low .count { color: #4488ff; }
+        .summary-card.info .count { color: #44aaff; }
+        .summary-card.total .count { color: #333; }
+
+        .summary-card .label {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filters {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .filter-btn.active {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        .findings {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .finding {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #ddd;
+        }
+
+        .finding.severity-critical { border-left-color: #ff0055; }
+        .finding.severity-high { border-left-color: #ff4444; }
+        .finding.severity-medium { border-left-color: #ff9944; }
+        .finding.severity-low { border-left-color: #4488ff; }
+        .finding.severity-info { border-left-color: #44aaff; }
+
+        .finding-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .finding-icon {
+            font-size: 20px;
+        }
+
+        .finding-severity {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .finding.severity-critical .finding-severity { background: #ff0055; color: white; }
+        .finding.severity-high .finding-severity { background: #ff4444; color: white; }
+        .finding.severity-medium .finding-severity { background: #ff9944; color: white; }
+        .finding.severity-low .finding-severity { background: #4488ff; color: white; }
+        .finding.severity-info .finding-severity { background: #44aaff; color: white; }
+
+        .finding-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .finding-rule {
+            margin-left: auto;
+            font-size: 12px;
+            color: #888;
+            font-family: monospace;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .finding-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .finding-details > div {
+            font-size: 14px;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+        }
+
+        .finding-evidence code {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+        }
+
+        .finding-remediation {
+            background: #e7f5ff;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .finding-references a {
+            color: #4488ff;
+            text-decoration: none;
+        }
+
+        .finding-references a:hover {
+            text-decoration: underline;
+        }
+
+        .no-findings {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .no-findings h2 {
+            color: #28a745;
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding: 16px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .finding-header {
+                flex-wrap: wrap;
+            }
+            .finding-rule {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Security Scan Report</h1>
+            <div class="repo">{{REPOSITORY}}</div>
+            <div class="meta">
+                Scan Time: {{SCAN_TIME}} | Duration: {{DURATION}}s
+            </div>
+        </div>
+
+        <div class="summary">
+            <div class="summary-card critical">
+                <div class="count">{{CRITICAL}}</div>
+                <div class="label">Critical</div>
+            </div>
+            <div class="summary-card high">
+                <div class="count">{{HIGH}}</div>
+                <div class="label">High</div>
+            </div>
+            <div class="summary-card medium">
+                <div class="count">{{MEDIUM}}</div>
+                <div class="label">Medium</div>
+            </div>
+            <div class="summary-card low">
+                <div class="count">{{LOW}}</div>
+                <div class="label">Low</div>
+            </div>
+            <div class="summary-card info">
+                <div class="count">{{INFO}}</div>
+                <div class="label">Info</div>
+            </div>
+            <div class="summary-card total">
+                <div class="count">{{TOTAL}}</div>
+                <div class="label">Total</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="critical">Critical</button>
+            <button class="filter-btn" data-filter="high">High</button>
+            <button class="filter-btn" data-filter="medium">Medium</button>
+            <button class="filter-btn" data-filter="low">Low</button>
+            <button class="filter-btn" data-filter="info">Info</button>
+        </div>
+
+        <div class="findings">
+            {{FINDINGS}}
+        </div>
+
+        <div class="footer">
+            Generated by <a href="https://github.com/user/snitch-checker">Snitch-Checker</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const findings = document.querySelectorAll('.finding');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filter = this.dataset.filter;
+
+                    findings.forEach(finding => {
+                        if (filter === 'all') {
+                            finding.style.display = 'block';
+                        } else {
+                            finding.style.display = finding.dataset.severity === filter ? 'block' : 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
